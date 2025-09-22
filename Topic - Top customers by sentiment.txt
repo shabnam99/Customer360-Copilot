@@ -1,0 +1,42 @@
+kind: AdaptiveDialog
+modelDescription: |-
+  who are the top 5 customers by sentiment
+
+  top customers by sentiment
+
+  best customer sentiment
+
+  highest sentiment customers
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - top customers by sentiment
+      - who are our happiest customers
+      - show customers with best feedback
+      - list top positive customer reviews
+      - which clients have the highest satisfaction
+      - most satisfied customers
+      - customers with best sentiment scores
+      - top rated clients by sentiment analysis
+      - who has given us the most positive feedback
+
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_SxYtOD
+      input: {}
+      output:
+        binding:
+          topcustomersjson: Topic.topcustomersjson
+
+      flowId: ac4cf1f7-9f94-f011-b41b-7c1e52581ac4
+
+    - kind: SendActivity
+      id: SendActivity_ts3Cg0
+      activity: |
+        The top 5 customers by sentiment are:
+        - {Topic.topcustomersjson}
+
+inputType: {}
+outputType: {}

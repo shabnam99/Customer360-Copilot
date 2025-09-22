@@ -1,0 +1,41 @@
+kind: AdaptiveDialog
+modelDescription: |-
+  list overdue invoices
+  overdue invoices
+  pending payments
+  due bills
+  unpaid invoices
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_gWoi6t
+      input:
+        binding:
+          text: ="all"
+
+      output:
+        binding:
+          overdueinvoicesjson: Topic.overdueinvoicesjson
+
+      flowId: f62e5ab5-f893-f011-b41b-7c1e52581ac4
+
+    - kind: SendActivity
+      id: sendActivity_ShowOverdues
+      activity: |-
+        Summarize these overdue invoices clearly:
+
+        JSON Data:
+        {Topic.overdueinvoicesjson}
+
+        Instructions:
+        - Start by summarizing total invoices and total amount like: "3 invoices are overdue totaling $4,500".
+        - Then list each invoice (avoid duplicate invoices) as a bullet point in this format:
+        "CustomerName — InvoiceId — DueDate — $Amount"
+        - Format dates as "MMM dd, yyyy" (e.g., Sep 18, 2025).
+        - If there are no overdue invoices, simply respond: "No overdue invoices found."
+
+inputType: {}
+outputType: {}

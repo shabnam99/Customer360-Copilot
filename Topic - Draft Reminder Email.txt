@@ -1,0 +1,75 @@
+kind: AdaptiveDialog
+modelDescription: |-
+  list overdue invoices
+  overdue invoices
+  pending payments
+  due bills
+  unpaid invoices
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_gWoi6t
+      input:
+        binding:
+          text: ="all"
+
+      output:
+        binding:
+          overdueinvoicesjson: Topic.overdueinvoicesjson
+
+      flowId: f62e5ab5-f893-f011-b41b-7c1e52581ac4
+
+    - kind: SendActivity
+      id: sendActivity_ShowOverdues
+      activity: |-
+        Summarize these overdue invoices clearly:
+        JSON Data:
+        {Topic.overdueinvoicesjson}
+        Instructions:
+        - Start by summarizing total invoices and total amount like: "3 invoices are overdue totaling $4,500".
+        - Then list each invoice (avoid duplicate invoices) as a bullet point in this format:
+        "CustomerName — InvoiceId — DueDate — $Amount"
+        - Format dates as "MMM dd, yyyy" (e.g., Sep 18, 2025).
+        - If there are no overdue invoices, simply respond: "No overdue invoices found."
+
+    - kind: Question
+      id: question_lpZss2
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.varSendEmail
+      prompt: Do you want me to prepare the reminder email draft now?
+      entity: BooleanPrebuiltEntity
+
+    - kind: ConditionGroup
+      id: conditionGroup_THWNzN
+      conditions:
+        - id: conditionItem_ebVSzf
+          condition: =Topic.varSendEmail = true
+          actions:
+            - kind: InvokeFlowAction
+              id: invokeFlowAction_7W7FKb
+              input:
+                binding:
+                  text: =Topic.overdueinvoicesjson
+
+              output:
+                binding:
+                  draftbody: Topic.draftBody
+
+              flowId: d3ab83d4-4595-f011-bbd2-0022482d7d6b
+
+            - kind: SendActivity
+              id: sendActivity_c4Vob6
+              activity: "{Topic.draftBody}"
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_AywsIz
+          activity: _“Okay — I won’t prepare the email draft now.”_
+
+inputType: {}
+outputType: {}
